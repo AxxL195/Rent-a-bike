@@ -1,15 +1,23 @@
 import { Route, Routes } from 'react-router-dom'
-import Login from '../pages/login/Login'
 import LandingPage from '../pages/landingpage/LandingPage'
-import Home from '../pages/home/Home'
+import CustomerDashboard from '../pages/customer/customerdashboard/CustomerDashboard'
+import SearchResults from '../pages/customer/customerdashboard/searchresults/SearchResults'
+import ShopForm from '../pages/owner/onboardingpage/ShopForm'
+import ManageBikes from '../pages/owner/ManageBikes'
+import BikeForm from '../pages/owner/BikeForm'
+import OwnerDashboard from '../pages/owner/ownerdashboard/dashboard'
 
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path='/' element={<LandingPage/>} />
-      {/* <Route path='/login' element={<Login/>} /> */}
-      <Route path='/home' element={<Home/>} />
+      <Route path='/cd' element={<CustomerDashboard/>} />
+      <Route path='/od' element={<OwnerDashboard/>} />
+      <Route path='/sr' element={<SearchResults/>} />
+      <Route path="/shopform" element={<ShopForm/>} />
+      <Route path="/mb" element={<ManageBikes/>} />
+      <Route path="/bf" element={<BikeForm/>} />
     </Routes>
   )
 }

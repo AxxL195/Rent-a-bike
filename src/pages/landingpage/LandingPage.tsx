@@ -284,54 +284,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2">
-                <Bike className="h-6 w-6 text-emerald-400" />
-                <span className="text-white text-lg font-semibold">Rent-A-Bike</span>
-              </div>
-              <p className="mt-3 text-sm">Your trusted platform for bike and scooty rentals.</p>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-3">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-emerald-400 transition">About Us</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">How It Works</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">Rentals</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">Contact</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-3">Support</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-emerald-400 transition">FAQs</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition">Help Center</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-3">Follow Us</h4>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-emerald-400 transition"><Facebook className="h-5 w-5" /></a>
-                <a href="#" className="hover:text-emerald-400 transition"><Twitter className="h-5 w-5" /></a>
-                <a href="#" className="hover:text-emerald-400 transition"><Instagram className="h-5 w-5" /></a>
-                <a href="#" className="hover:text-emerald-400 transition"><Linkedin className="h-5 w-5" /></a>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-10 pt-6 text-sm text-center text-gray-400">
-            &copy; {new Date().getFullYear()} Rent-A-Bike. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      
       <LoginModal isOpen={loginOpen} setIsOpen={setLoginOpen} />
     </div>
   )
