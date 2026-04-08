@@ -1,4 +1,37 @@
+import { useState} from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const LoginForm = (props: any) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e:any) =>{
+    e.preventDefault();
+    try{
+      const res=await axios.post("http://localhost:5000/api/v1/auth/login",
+          { 
+            email, 
+            password 
+          });
+
+      const token = res.data.data.token;
+
+      //store token in local storage
+      localStorage.setItem("token",token);
+      
+      const user=res.data.data.user;
+
+      if(user.role === "owner")
+        navigate(`/owner/${user._id}/dashboard`) // Redirect to owner dashboard
+      else if(user.role === "customer")
+        navigate(`/customer/${user._id}/dashboard`) // Redirect to customer dashboard
+
+    }catch(err){
+      console.error(err);
+    }
+  }
   
   return (
     <div
@@ -6,7 +39,7 @@ const LoginForm = (props: any) => {
         props.active ? "right-[-50%] invisible" : "right-0 visible"
       }`}
     >
-      <form action="" className="w-full">
+      <form onSubmit={handleLogin} className="w-full">
         <h1 className="text-4xl font-bold mb-6">Login</h1>
         <div className="relative h-13 mb-4">
           <input
@@ -14,6 +47,8 @@ const LoginForm = (props: any) => {
             placeholder="Email"
             required
             className="w-full h-13 px-4 bg-gray-100 rounded-lg border-0 outline-none text-gray-900 font-medium placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-300 transition-all"
+            value={email}
+            onChange={(e) =>  setEmail(e.target.value)}
           />
         </div>
         <div className="relative h-13 mb-4">
@@ -22,6 +57,8 @@ const LoginForm = (props: any) => {
             placeholder="Password"
             required
             className="w-full h-13 px-4 bg-gray-100 rounded-lg border-0 outline-none text-gray-900 font-medium placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-300 transition-all"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="relative mb-8">

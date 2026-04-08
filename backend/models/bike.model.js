@@ -3,7 +3,7 @@ import { type } from "os";
 
 const bikeSchema = new mongoose.Schema({
     shop:{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Shop',
         required: [true, "Shop is required for booking"],
         index: true
@@ -32,7 +32,7 @@ const bikeSchema = new mongoose.Schema({
         type: String,
         required: [true, "Bike description is required"],
         trim: true,
-        minLength: [10, "Bike description must be at least 10 characters long"],
+        minLength: [3, "Bike description must be at least 3 characters long"],
     },
     images:{
         type: [String],
@@ -40,7 +40,7 @@ const bikeSchema = new mongoose.Schema({
     },
     availability:{
         type: String,
-        enum: ['available','limited','booked'],
+        enum: ['available','booked','unavailable'],
         default: 'available',
     },
     specs:{

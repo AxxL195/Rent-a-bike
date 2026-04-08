@@ -15,7 +15,7 @@ const LandingPage = () => {
       name: 'Activa 6G',
       type: 'Scooter',
       price: 500,
-      availability: 'Available',
+      availability: 'available',
       image: 'https://etimg.etb2bimg.com/photo/73269142.cms',
     },
     {
@@ -23,7 +23,7 @@ const LandingPage = () => {
       name: 'Royal Enfield Himalayan',
       type: 'Bike',
       price: 800,
-      availability: 'Limited',
+      availability: 'unavailable',
       image: 'https://imgd.aeplcdn.com/600x600/n/cw/ec/110431/himalayan-right-side-view-7.png?isig=0',
     },
     {
@@ -31,7 +31,7 @@ const LandingPage = () => {
       name: 'Ntorq 125',
       type: 'Scooter',
       price: 600,
-      availability: 'Available',
+      availability: 'available',
       image: 'https://cdn.shriramfinance.in/tw-marketplace/model/ntorq-125.webp',
     },
   ];
@@ -238,7 +238,7 @@ const LandingPage = () => {
                   <div className="absolute top-3 right-3">
                     <span
                       className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                        bike.availability === 'Available'
+                        bike.availability === 'available'
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}

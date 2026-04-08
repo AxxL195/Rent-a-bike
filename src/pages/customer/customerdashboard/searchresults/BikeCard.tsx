@@ -21,7 +21,7 @@ const BikeCard = ({ bike }: BikeCardProps) => {
        <div className="relative h-40 overflow-hidden">
          <img src={bike.image} alt={bike.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
          <span className={`absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full ${
-          bike.availability === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+          bike.availability === 'available' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
         }`}>
           {bike.availability}
         </span>

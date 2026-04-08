@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const BikeForm: React.FC = () => {
-  const { shopId, bikeId } = useParams<{ shopId: string; bikeId?: string }>();
+  const { shopId, bikeId } = useParams<{ shopId: string; bikeId: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ const BikeForm: React.FC = () => {
     transmission: 'manual' as 'automatic' | 'manual',
     pricePerDay: '',
     description: '',
-    availability: 'available' as 'available' | 'limited' | 'booked',
+    availability: 'available' as 'available' | 'booked' | 'unavailable',
   });
   const [images, setImages] = useState<FileList | null>(null);
 
@@ -82,14 +82,23 @@ const BikeForm: React.FC = () => {
       // For new bike without selected images, we might need to handle required field
     }
 
+    console.log(shopId)
     try {
       if (bikeId) {
-        await axios.put(`/api/bikes/${bikeId}`, submitData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        await axios.put(`http://localhost:5000/api/v1/bikes/bikeAdd/${shopId}`, submitData, {
+          headers: { 
+            'Content-Type': 'multipart/form-data', 
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+        
         });
-      } else {
-        await axios.post('/api/bikes', submitData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+      } else { 
+        await axios.post('http://localhost:5000/api/v1/bikes/bikeAdd', submitData, {
+          headers: { 
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+
+          },
         });
       }
       navigate(`/owner/shop/${shopId}/bikes`);
@@ -192,7 +201,7 @@ const BikeForm: React.FC = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option value="available">Available</option>
-                <option value="limited">Limited (few left)</option>
+                <option value="unavailable">Unavailable</option>
                 <option value="booked">Booked</option>
               </select>
             </div>

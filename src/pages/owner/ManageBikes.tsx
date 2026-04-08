@@ -11,7 +11,7 @@ interface Bike {
   pricePerDay: number;
   description: string;
   images: string[];
-  availability: 'available' | 'limited' | 'booked';
+  availability: 'available' | 'booked' | 'unavailable';
 }
 
 const ManageBikes: React.FC = () => {
@@ -98,9 +98,9 @@ const ManageBikes: React.FC = () => {
                   <span className={`absolute top-2 right-2 text-xs font-semibold px-2 py-1 rounded-full ${
                     bike.availability === 'available'
                       ? 'bg-emerald-100 text-emerald-800'
-                      : bike.availability === 'limited'
-                      ? 'bg-amber-100 text-amber-800'
-                      : 'bg-red-100 text-red-800'
+                      : bike.availability === 'booked'
+                      ? 'bg-blue-100 text-amber-800'
+                      : 'bg-blue-300 text-blue-800'
                   }`}>
                     {bike.availability}
                   </span>

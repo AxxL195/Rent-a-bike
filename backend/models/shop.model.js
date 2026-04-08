@@ -1,79 +1,92 @@
 import mongoose from "mongoose";
-import { type } from "os";
-import { types } from "util";
 
-const shopSchema =  new mongoose.Schema({
-    owner:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: [true, "Shop owner is required"]
+const shopSchema = new mongoose.Schema({
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, "Shop owner is required"]
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+    minLength: 3,
+    maxLength: 100
+  },
+  address: {
+    type: String,
+    required: true,
+    trim: true,
+    minLength: 10,
+    maxLength: 200
+  },
+  city: {
+    type: String,
+    required: true,
+    trim: true,
+    minLength: 2,
+    maxLength: 100
+  },
+  pincode: {
+    type: String,
+    required: true,
+    match: /^\d{6}$/
+  },
+  phone: {
+    type: String,
+    required: true,
+    match: /^\d{10}$/
+  },
+  email: {
+    type: String,
+    required: false,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    match: /\S+@\S+\.\S+/
+  },
+  openingHours: {
+    type: String,
+    required: true
+  },
+  closingHours: {
+    type: String,
+    required: true
+  },
+  images: {
+    type: [String],
+    default: []
+  },
+  rating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+      required: true
     },
-    name:{
-        type: String,
-        required: [true, "Shop name is required"],
-        trim: true,
-        minLength: [3, "Shop name must be at least 3 characters long"],
-        maxLength: [100, "Shop name must be less than 100 characters long"]
-    },
-    address:{
-        type: String,
-        required: [true, "Shop address is required"],
-        trim: true,
-        minLength: [10, "Shop address must be at least 10 characters long"],
-        maxLength: [200, "Shop address must be less than 200 characters long"]
-    },
-    city:{
-        type: String,
-        required: [true, "Shop city is required"],
-        trim: true,
-        minLength: [2, "Shop city must be at least 2 characters long"],
-        maxLength: [100, "Shop city must be less than 100 characters long"]
-    },
-    pincode:{
-        type: String,
-        required: [true, "Shop pincode is required"],
-        trim: true,
-        match: [/^\d{6}$/, "Please use a valid 6-digit pincode"]
-    },
-    phone:{
-        type: String,
-        required: [true, "Shop phone number is required"],
-        trim: true,
-        match: [/^\d{10}$/, "Please use a valid 10-digit phone number"]
-    },
-    email:{
-        type: String,
-        required: [true, "Shop email is required"],
-        unique: true,
-        lowercase: true,
-        trim: true,
-        match: [/\S+@\S+\.\S+/, "Please use a valid email address"]
-    },
-    openingHours:{
-        type: String,
-        required: [true, "Shop opening hours are required"],
-        trim: true
-    },
-    closingHours:{
-        type: String,
-        required: [true, "Shop closing hours are required"],
-        trim: true
-    },
-    images:{
-        type: [String],
-        default: []
-    },
-    location:{
-        type:{
-            type: String,
-            enum: ['Point'],
-            required: [true, "Shop location type is required"],
-            default: 'Point'
+    coordinates: {
+      type: [Number],
+      required: true,
+      validate: {
+        validator: function (val) {
+          return val.length === 2 &&
+            val[0] >= -180 && val[0] <= 180 &&
+            val[1] >= -90 && val[1] <= 90;
         },
-        coordinates:{
-            type: [Number],
-            required: [true, "Shop location coordinates are required"],
-            index: '2dsphere'
-        }
+        message: "Coordinates must be [lng, lat]"
+      }
     }
-}, {timestamps: true});
+  }
+}, { timestamps: true });
+
+shopSchema.index({ location: '2dsphere' });
+
+const Shop = mongoose.model('Shop', shopSchema);
+
+export default Shop;

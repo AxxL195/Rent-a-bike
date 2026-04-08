@@ -44,7 +44,7 @@ const SearchResults = () => {
       rating: 4.8,
       price: 500,
       priceUnit: 'day',
-      availability: 'Available',
+      availability: 'available',
       image: 'https://etimg.etb2bimg.com/photo/73269142.cms',
     },
     {
@@ -55,7 +55,7 @@ const SearchResults = () => {
       rating: 4.9,
       price: 800,
       priceUnit: 'day',
-      availability: 'Limited',
+      availability: 'unavailable',
       image: 'https://imgd.aeplcdn.com/600x600/n/cw/ec/110431/himalayan-right-side-view-7.png?isig=0',
     },
     {
@@ -66,7 +66,7 @@ const SearchResults = () => {
       rating: 4.5,
       price: 600,
       priceUnit: 'day',
-      availability: 'Available',
+      availability: 'available',
       image: 'https://cdn.shriramfinance.in/tw-marketplace/model/ntorq-125.webp',
     },
     {
@@ -77,7 +77,7 @@ const SearchResults = () => {
       rating: 4.6,
       price: 450,
       priceUnit: 'day',
-      availability: 'Available',
+      availability: 'available',
       image: 'https://bd.gaadicdn.com/upload/userfiles/images/2023/03/tvs-jupiter-110.jpg',
     },
     {
@@ -88,7 +88,7 @@ const SearchResults = () => {
       rating: 4.7,
       price: 550,
       priceUnit: 'day',
-      availability: 'Available',
+      availability: 'available',
       image: 'https://imgd.aeplcdn.com/600x600/n/cw/ec/40480/fascino-125-right-side-view-3.png',
     },
     {
@@ -99,7 +99,7 @@ const SearchResults = () => {
       rating: 4.4,
       price: 480,
       priceUnit: 'day',
-      availability: 'Booked',
+      availability: 'booked',
       image: 'https://imgd.aeplcdn.com/600x600/n/cw/ec/40490/dio-right-side-view-3.png',
     },
   ];

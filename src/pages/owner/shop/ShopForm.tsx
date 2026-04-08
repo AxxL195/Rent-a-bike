@@ -1,9 +1,10 @@
 // src/pages/owner/ShopForm.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const ShopForm: React.FC = () => {
+  const { ownerId } = useParams<{ ownerId: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,16 +45,18 @@ const ShopForm: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    
     const submitData = new FormData();
     submitData.append('name', formData.name);
     submitData.append('address', formData.address);
     submitData.append('city', formData.city);
     submitData.append('pincode', formData.pincode);
     submitData.append('phone', formData.phone);
-    if (formData.email) submitData.append('email', formData.email);
+    submitData.append('email', formData.email);
     submitData.append('openingHours', formData.openingHours);
     submitData.append('closingHours', formData.closingHours);
-    submitData.append('location[coordinates]', JSON.stringify([parseFloat(formData.longitude), parseFloat(formData.latitude)]));
+    submitData.append('latitude', formData.latitude);
+    submitData.append('longitude', formData.longitude);
 
     if (images) {
       for (let i = 0; i < images.length; i++) {
@@ -61,11 +64,17 @@ const ShopForm: React.FC = () => {
       }
     }
 
+    console.log('shop data', formData); 
+
     try {
-      const response = await axios.post('/api/shops', submitData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      navigate(`/owner/shop/${response.data.id}/bikes`);
+      const response = await axios.post('http://localhost:5000/api/v1/shops/create', submitData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data', 
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+      }
+      );
+      navigate(`/owner/shop/${response.data._id}/bikes`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to create shop');
     } finally {
@@ -240,12 +249,12 @@ const ShopForm: React.FC = () => {
                 </div>
               </div>
               {/* Map placeholder */}
-              <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+              {/* <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
                 <span>Map preview will appear here</span>
               </div>
               <p className="text-xs text-gray-500 mt-2">
                 You can use a tool like <a href="https://www.latlong.net/" target="_blank" rel="noreferrer" className="text-emerald-600">latlong.net</a> to find coordinates.
-              </p>
+              </p> */}
             </div>
 
             {/* Images */}
@@ -281,7 +290,7 @@ const ShopForm: React.FC = () => {
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
               <button
                 type="button"
-                onClick={() => navigate('/owner/dashboard')}
+                onClick={() => navigate(`/owner/${ownerId}/dashboard`)}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
               >
                 Cancel
