@@ -1,6 +1,6 @@
 // src/pages/customer/Checkout.tsx
-import React, { useState, useEffect, use } from 'react';
-import { useNavigate, useSearchParams, Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

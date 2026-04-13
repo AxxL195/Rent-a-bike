@@ -9,7 +9,6 @@ import {
   Clock,
   Loader,
   AlertCircle,
-  Bike,
   MapPin,
   ChevronRight,
 } from 'lucide-react';

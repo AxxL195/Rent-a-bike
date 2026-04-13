@@ -5,12 +5,8 @@ import axios from 'axios';
 import {
   Star,
   MapPin,
-  Calendar,
-  Clock,
   Bike,
   Settings,
-  Fuel,
-  Gauge,
   Shield,
   AlertCircle,
   ChevronLeft,

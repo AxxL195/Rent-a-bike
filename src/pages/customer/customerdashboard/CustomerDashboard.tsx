@@ -1,7 +1,7 @@
 // src/pages/customer/CustomerDashboard.tsx
 import React, { useState, useEffect } from 'react';
 import { Map, ChevronRight, Loader } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';
 import Search from './Search';
@@ -11,10 +11,10 @@ import NearbyMap from '../../../components/map/NearbyMap';
 
 const CustomerDashboard: React.FC = () => {
   // const {customerId} = useParams<{ customerId: string }>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [shops, setShops] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  // const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load nearby shops automatically on mount using geolocation
@@ -45,13 +45,13 @@ const CustomerDashboard: React.FC = () => {
               hasImage: !!s.image
             })));
             setShops(Array.isArray(response.data) ? response.data : []);
-            setHasSearched(true);
+            
           } catch (err: any) {
             console.log('Failed to load nearby shops:', err);
             // Fallback to mock data in development
             if (import.meta.env.DEV) {
               // setShops(mockShops);
-              setHasSearched(true);
+              
             } else {
               setError('Unable to load shops. Please try searching manually.');
             }
@@ -64,7 +64,7 @@ const CustomerDashboard: React.FC = () => {
           // Fallback to mock data in development
           if (import.meta.env.DEV) {
             // setShops(mockShops);
-            setHasSearched(true);
+            
           } else {
             setError('Location access denied. Please search manually.');
           }
@@ -75,7 +75,7 @@ const CustomerDashboard: React.FC = () => {
       // Geolocation not supported, use mock data
       if (import.meta.env.DEV) {
         // setShops(mockShops);
-        setHasSearched(true);
+        
       }
       setLoading(false);
     }
@@ -83,14 +83,11 @@ const CustomerDashboard: React.FC = () => {
 
   const handleSearchResults = (results: any[]) => {
     setShops(results);
-    setHasSearched(true);
+    
     setError(null);
   };
 
-  const handleViewBikes = (shopId: string) => {
-    navigate(`/shop/${shopId}`);
-  };
-
+  
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 antialiased">
       <Navbar />
