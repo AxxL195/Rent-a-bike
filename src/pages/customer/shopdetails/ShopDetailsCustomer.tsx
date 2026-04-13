@@ -10,10 +10,6 @@ import {
   Bike as BikeIcon,
   Loader,
   AlertCircle,
-  Shield,
-  Award,
-  Users,
-  CheckCircle,
 } from 'lucide-react';
 import Navbar from '../customerdashboard/Navbar';
 
@@ -66,11 +62,13 @@ const ShopDetailsCustomer: React.FC = () => {
         const shopRes = await axios.get(`http://localhost:5000/api/v1/shops/shopDetails/${shopId}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+        console.log('Shop data:', shopRes.data.data);
         setShop(shopRes.data.data);
 
         const bikesRes = await axios.get(`http://localhost:5000/api/v1/bikes/shopbikes/${shopId}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+        console.log('Bikes data:', bikesRes.data);
         setBikes(bikesRes.data);
       } catch (err: any) {
         console.error(err);
@@ -130,9 +128,13 @@ const ShopDetailsCustomer: React.FC = () => {
         {/* Hero Section with Image and Overlay */}
         <div className="relative rounded-2xl overflow-hidden shadow-lg mb-8 h-64 md:h-96">
           <img
-            src={shop.images?.[0] || 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'}
+            src={shop.images?.[0] ? `http://localhost:5000/uploads/${shop.images[0]}` : 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'}
             alt={shop.name}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              console.error('Shop image failed to load:', shop.images?.[0]);
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80';
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="p-6 text-white">
@@ -210,9 +212,13 @@ const ShopDetailsCustomer: React.FC = () => {
                     >
                       <div className="relative h-44 overflow-hidden">
                         <img
-                          src={bike.images[0] || 'https://via.placeholder.com/400x300?text=No+Image'}
+                          src={bike.images && bike.images.length > 0 && bike.images[0] ? `http://localhost:5000/uploads/${bike.images[0]}` : 'https://via.placeholder.com/400x300?text=No+Image'}
                           alt={bike.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                          onError={(e) => {
+                            console.error('Bike image failed to load:', bike.images?.[0]);
+                            e.currentTarget.src = 'https://via.placeholder.com/400x300?text=No+Image';
+                          }}
                         />
                         <span
                           className={`absolute top-2 right-2 text-xs font-semibold px-2 py-1 rounded-full ${

@@ -84,6 +84,12 @@ const BikeForm: React.FC = () => {
 
     console.log(shopId)
     try {
+      console.log('📤 Submitting bike form');
+      console.log('  shopId:', shopId);
+      console.log('  Images count:', images?.length || 0);
+      console.log('  Form data:', formData);
+      console.log('  bikeId:', bikeId);
+      
       if (bikeId) {
         await axios.put(`http://localhost:5000/api/v1/bikes/bikeAdd/${shopId}`, submitData, {
           headers: { 
@@ -93,13 +99,15 @@ const BikeForm: React.FC = () => {
         
         });
       } else { 
-        await axios.post('http://localhost:5000/api/v1/bikes/bikeAdd', submitData, {
+        console.log('📨 POST request to create bike');
+        const response = await axios.post('http://localhost:5000/api/v1/bikes/bikeAdd', submitData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('token')}`
 
           },
         });
+        console.log('✓ Bike created successfully:', response.data);
       }
       navigate(`/owner/shop/${shopId}/bikes`);
     } catch (err: any) {

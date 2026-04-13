@@ -67,7 +67,7 @@ const BikeDetailsCustomer: React.FC = () => {
         console.log("Bike details response:", res.data);
         setBike(res.data);
         if (res.data.images && res.data.images.length > 0) {
-          setSelectedImage(res.data.images[0]);
+          setSelectedImage(`http://localhost:5000/uploads/${res.data.images[0]}`);
         }
       } catch (err: any) {
         console.error(err);
@@ -139,21 +139,35 @@ const BikeDetailsCustomer: React.FC = () => {
                 src={selectedImage || 'https://via.placeholder.com/600x400?text=No+Image'}
                 alt={bike.name}
                 className="w-full h-96 object-cover"
+                onError={(e) => {
+                  console.error('Main bike image failed to load:', selectedImage);
+                  e.currentTarget.src = 'https://via.placeholder.com/600x400?text=No+Image';
+                }}
               />
             </div>
             {bike.images && bike.images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
-                {bike.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(img)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${
-                      selectedImage === img ? 'border-emerald-600' : 'border-gray-200'
-                    }`}
-                  >
-                    <img src={img} alt={`${bike.name} ${idx + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+                {bike.images.map((img, idx) => {
+                  const imgUrl = `http://localhost:5000/uploads/${img}`;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImage(imgUrl)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${
+                        selectedImage === imgUrl ? 'border-emerald-600' : 'border-gray-200'
+                      }`}
+                    >
+                      <img 
+                        src={imgUrl} 
+                        alt={`${bike.name} ${idx + 1}`} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                        }}
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -189,7 +203,7 @@ const BikeDetailsCustomer: React.FC = () => {
             <div className="bg-emerald-50 rounded-xl p-4 flex items-baseline justify-between">
               <div>
                 <span className="text-sm text-gray-600">Rent per day</span>
-                <p className="text-3xl font-bold text-emerald-600">₹{bike.pricePerDay}</p>
+                <p className="text-3xl font-bold text-emerald-600">${bike.pricePerDay}</p>
               </div>
               <div className="text-right">
                 <span className="text-sm text-gray-600">+ taxes</span>

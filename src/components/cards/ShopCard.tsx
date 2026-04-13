@@ -18,18 +18,29 @@ interface ShopCardProps {
 
 const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   const customerId = useParams<{ customerId: string }>().customerId; // Get customerId from URL params
-
+  console.log('ShopCard received shop:', shop);
+  console.log('Image path would be:', `http://localhost:5000/uploads/${shop.image}`);
   const onViewBikes = () => {
     window.location.href = `/customer/${customerId}/shops/${shop.id}`; // Replace '1' with actual customer ID
   }
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="relative h-40 overflow-hidden">
-        <img
-          src={shop.image}
-          alt={shop.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+        {shop.image ? (
+          <img
+            src={`http://localhost:5000/uploads/${shop.image}`}
+            alt={shop.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => {
+              console.error('Image failed to load:', shop.image);
+              e.currentTarget.src = 'https://via.placeholder.com/300x150?text=No+Image';
+            }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">
+            No image available
+          </div>
+        )}
         {/* Distance badge (if provided) */}
         {shop.distance && (
           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-semibold shadow-md text-gray-700">

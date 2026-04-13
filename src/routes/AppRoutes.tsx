@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import LandingPage from '../pages/landingpage/LandingPage'
 import CustomerDashboard from '../pages/customer/customerdashboard/CustomerDashboard'
-import SearchResults from '../pages/customer/customerdashboard/searchresults/SearchResults'
 import ShopForm from '../pages/owner/shop/ShopForm'
 import ManageBikes from '../pages/owner/ManageBikes'
 import BikeForm from '../pages/owner/BikeForm'
@@ -20,7 +19,6 @@ const AppRoutes = () => {
       <Route path='/' element={<LandingPage/>} />
       <Route path='/customer/:customerId/dashboard' element={<CustomerDashboard/>} />
       <Route path='/owner/:ownerId/dashboard' element={<OwnerDashboard/>} />
-      <Route path='/sr' element={<SearchResults/>} />
       <Route path="/owner/:ownerId/shops/create" element={<ShopForm/>} />
       <Route path="/owner/:ownerId/bikes" element={<ManageBikes/>} />
       <Route path="/owner/:shopId/bikes/create" element={<BikeForm/>} />

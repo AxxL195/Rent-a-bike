@@ -2,6 +2,46 @@ import mongoose from 'mongoose';
 import Shop from '../models/shop.model.js';
 import Bike from '../models/bike.model.js';
 import Booking from '../models/booking.model.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, '../uploads');
+
+// Helper function to find actual image filename (handles both old and new formats)
+const findImageFile = (storedFilename) => {
+  if (!storedFilename) {
+    console.warn('Empty stored filename provided');
+    return null;
+  }
+  
+  try {
+    // Check if file exists as-is (new format with timestamp)
+    const fullPath = path.join(uploadsDir, storedFilename);
+    if (fs.existsSync(fullPath)) {
+      console.log(`✓ Found shop image file directly: ${storedFilename}`);
+      return storedFilename;
+    }
+    
+    // For old format filenames without timestamps, search for matching file
+    const files = fs.readdirSync(uploadsDir);
+    const matchedFile = files.find(file => file.endsWith(storedFilename));
+    
+    if (matchedFile) {
+      console.log(`✓ Found matching shop file for ${storedFilename}: ${matchedFile}`);
+      return matchedFile;
+    }
+    
+    console.warn(`✗ No file found for stored filename: ${storedFilename}`);
+    console.warn(`  Available files count: ${files.length}`);
+    return null;
+  } catch (error) {
+    console.error('Error finding shop image file:', error.message);
+    return null;
+  }
+};
 
 export const createShop = async (req,res) =>{
     const session = await mongoose.startSession();
@@ -17,7 +57,7 @@ export const createShop = async (req,res) =>{
             return res.status(400).json({ success: false, message: 'All fields are required' });
         }
 
-        const imageURLs = (req.files || []).map((file) => file.originalname);
+        const imageURLs = (req.files || []).map((file) => file.filename);
         console.log("Creating shop for user:", req.user._id);
         const newShop = await Shop.create([{ owner: req.user._id, name, address, city, pincode, phone, email, openingHours, closingHours, location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }, images: imageURLs }], {session});
 
@@ -195,17 +235,24 @@ export const nearbyShops = async (req, res) => {
 
     const nearbyShops = await Shop.aggregate(pipeline);
 
-    const formattedShops = nearbyShops.map(shop => ({
-      id: shop._id,
-      name: shop.name,
-      address: shop.address,
-      city: shop.city,
-      distance: `${(shop.distance / 1000).toFixed(1)} km`,
-      rating: shop.rating || 0,
-      totalBikes: shop.totalBikes || 0,
-      image: shop.images?.[0] || null,
-      location: shop.location
-    }));
+    const formattedShops = nearbyShops.map(shop => {
+      let imageFilename = null;
+      if (shop.images && shop.images.length > 0) {
+        imageFilename = findImageFile(shop.images[0]);
+      }
+      
+      return {
+        id: shop._id,
+        name: shop.name,
+        address: shop.address,
+        city: shop.city,
+        distance: `${(shop.distance / 1000).toFixed(1)} km`,
+        rating: shop.rating || 0,
+        totalBikes: shop.totalBikes || 0,
+        image: imageFilename,
+        location: shop.location
+      };
+    });
 
     res.status(200).json(formattedShops);
 
@@ -231,6 +278,10 @@ export const shopDetails = async (req, res) => {
     }
     const totalBikes = await Bike.countDocuments({ shop: shop._id });
     const totalBookings = await Booking.countDocuments({ shop: shop._id });
+    
+    // Map and find correct image filenames
+    const images = (shop.images || []).map(img => findImageFile(img)).filter(img => img !== null);
+    
     const responseShop = {
       id: shop._id,
       owner: shop.owner,
@@ -243,7 +294,7 @@ export const shopDetails = async (req, res) => {
       openingHours: shop.openingHours,
       closingHours: shop.closingHours,
       location: shop.location,
-      images: shop.images || [],
+      images: images,
       totalBikes,
       totalBookings,
       createdAt: shop.createdAt,

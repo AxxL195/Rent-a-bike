@@ -253,7 +253,7 @@ const ShopManagement: React.FC = () => {
                     <tr key={bike.id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <img src={bike.images?.[0] || "https://via.placeholder.com/40"}  alt={bike.name} className="h-10 w-10 rounded-full object-cover" />
+                          {/* <img src={bike.images?.[0] || "https://via.placeholder.com/40"}  alt={bike.name} className="h-10 w-10 rounded-full object-cover" /> */}
                           <div>
                             <div className="font-medium text-gray-900">{bike.name}</div>
                             <div className="text-sm text-gray-500 capitalize">{bike.transmission}</div>

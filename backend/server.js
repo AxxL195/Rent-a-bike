@@ -3,6 +3,8 @@ import "./config/env.js";
 import express from 'express';
 import path from "path";
 
+import { fileURLToPath } from "url";
+
 import {PORT,DB_URL} from './config/env.js';
 
 import loginRouter from './routes/login.routes.js';
@@ -16,11 +18,15 @@ import connecttoDB from '../database/mongodb.js';
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(cors());
 
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 app.use('/api/v1/auth',loginRouter);
 app.use('/api/v1/shops', shopRouter);

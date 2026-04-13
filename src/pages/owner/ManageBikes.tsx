@@ -28,10 +28,27 @@ const ManageBikes: React.FC = () => {
   const fetchBikes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/bikes?shopId=${shopId}`);
+      const response = await axios.get(`http://localhost:5000/api/v1/bikes/myBikes/${shopId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      
+      const bikeDetails = response.data.map((b: any) => ({
+        id: b.id,
+        name: b.name,
+        images: b.images,
+        imageCount: b.images?.length || 0,
+        imagesType: typeof b.images,
+        imagesIsArray: Array.isArray(b.images)
+      }));
+      console.log('Bikes details:', JSON.stringify(bikeDetails, null, 2));
+      console.log(`===== End Fetch Bikes =====\n`);
+      
       setBikes(response.data);
       setError(null);
     } catch (err: any) {
+      console.error('❌ Error fetching bikes:', err);
+      console.error('Error message:', err.message);
+      console.error('Error response:', err.response?.data);
       setError(err.response?.data?.message || 'Failed to load bikes');
     } finally {
       setLoading(false);
@@ -41,7 +58,9 @@ const ManageBikes: React.FC = () => {
   const handleDelete = async (bikeId: string) => {
     if (!confirm('Are you sure you want to delete this bike?')) return;
     try {
-      await axios.delete(`/api/bikes/${bikeId}`);
+      await axios.delete(`http://localhost:5000/api/v1/bikes/${bikeId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
       setBikes(bikes.filter(b => b.id !== bikeId));
     } catch (err: any) {
       alert(err.response?.data?.message || 'Delete failed');
@@ -87,13 +106,20 @@ const ManageBikes: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bikes.map(bike => (
+            {bikes.map(bike => {
+              const imageUrl = bike.images && bike.images.length > 0 ? `http://localhost:5000/uploads/${bike.images[0]}` : null;
+              console.log(`Bike ${bike.name}: images=`, bike.images, 'url=', imageUrl);
+              return (
               <div key={bike.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="relative h-40">
                   <img
-                    src={bike.images[0] || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    src={imageUrl || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={bike.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('Bike image failed to load:', imageUrl);
+                      e.currentTarget.src = 'https://via.placeholder.com/400x300?text=No+Image';
+                    }}
                   />
                   <span className={`absolute top-2 right-2 text-xs font-semibold px-2 py-1 rounded-full ${
                     bike.availability === 'available'
@@ -128,7 +154,8 @@ const ManageBikes: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         )}
       </div>

@@ -8,36 +8,6 @@ import Search from './Search';
 import ShopCard from '../../../components/cards/ShopCard';
 import NearbyMap from '../../../components/map/NearbyMap';
 
-// Mock data for development (in case API is not ready)
-const mockShops = [
-  {
-    id: 1,
-    name: 'City Bikes',
-    distance: '0.8 km',
-    rating: 4.8,
-    totalBikes: 12,
-    image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    address: '123 MG Road, Bangalore'
-  },
-  {
-    id: 2,
-    name: 'Scooty Hub',
-    distance: '1.2 km',
-    rating: 4.5,
-    totalBikes: 8,
-    image: 'https://images.unsplash.com/photo-1591635809020-1f5a9fc77b8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-    address: '456 Indiranagar, Bangalore'
-  },
-  {
-    id: 3,
-    name: 'Mountain Rentals',
-    distance: '2.3 km',
-    rating: 4.9,
-    totalBikes: 5,
-    image: 'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?ixlib=rb-4.0.3&auto=format&fit=crop&w=1528&q=80',
-    address: '789 Koramangala, Bangalore'
-  },
-];
 
 const CustomerDashboard: React.FC = () => {
   // const {customerId} = useParams<{ customerId: string }>();
@@ -68,6 +38,12 @@ const CustomerDashboard: React.FC = () => {
             });
 
             console.log('Nearby shops response:', response.data);
+            console.log('Shop details:', response.data.map((s: any) => ({ 
+              id: s.id,
+              name: s.name, 
+              image: s.image,
+              hasImage: !!s.image
+            })));
             setShops(Array.isArray(response.data) ? response.data : []);
             setHasSearched(true);
           } catch (err: any) {
