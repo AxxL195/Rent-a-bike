@@ -12,7 +12,19 @@ export const createOrder = async (req, res) => {
   try {
     const { bookingId } = req.body;
 
+    if (!mongoose.isValidObjectId(bookingId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Valid bookingId is required" });
+    }
+
     const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
 
     const days = Math.ceil(
       (new Date(booking.endDate) - new Date(booking.startDate)) /

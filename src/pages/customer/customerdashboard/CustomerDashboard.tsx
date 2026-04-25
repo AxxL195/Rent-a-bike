@@ -1,6 +1,6 @@
 // src/pages/customer/CustomerDashboard.tsx
 import React, { useState, useEffect } from 'react';
-import { Map, ChevronRight, Loader, ArrowLeft } from 'lucide-react';
+import { Map, ChevronRight, Loader } from 'lucide-react';
 // import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';

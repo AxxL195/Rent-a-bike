@@ -21,7 +21,7 @@ const AppRoutes = () => {
       <Route path='/owner/:ownerId/dashboard' element={<OwnerDashboard/>} />
       <Route path="/owner/:ownerId/shops/create" element={<ShopForm/>} />
       <Route path="/owner/:ownerId/bikes" element={<ManageBikes/>} />
-      <Route path="/owner/:shopId/bikes/create" element={<BikeForm/>} />
+      <Route path="/owner/:ownerId/:shopId/bikes/create" element={<BikeForm/>} />
       <Route path="/owner/:ownerId/bookings" element={<ViewBooking/>} />
       <Route path="/owner/:ownerId/shops/:shopId/bikes" element={<ShopManagement />} />
       <Route path="/customer/:customerId/shops/:shopId" element={<ShopDetailsCustomer />} />

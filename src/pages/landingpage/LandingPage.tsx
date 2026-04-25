@@ -4,7 +4,7 @@ import LoginModal from '../../utils/LoginModal';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-  const navigate= useNavigate();
+  
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const[loginOpen,setLoginOpen] = useState(false);
 

@@ -134,7 +134,6 @@ const Checkout: React.FC = () => {
         shopId: bike.shop.id,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-        totalPrice: calculateTotal(),
         customerName,
         customerEmail,
         customerPhone,
@@ -153,11 +152,16 @@ const Checkout: React.FC = () => {
       const res = await axios.post(
         `http://localhost:5000/api/v1/payment/create-order`,
         { bookingId: bookingId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
       );
 
       console.log(res.data);
 
-      const {order,key}= res.data
+      const { order, key } = res.data;
 
       const options = {
         key,
@@ -173,7 +177,7 @@ const Checkout: React.FC = () => {
         },
         readonly: {
           contact: true,
-          email: true
+          email: true,
         },
         handler: async function (response: any) {
           try {

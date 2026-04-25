@@ -4,7 +4,7 @@ import { protect } from '../middleware/auth.middleware.js';
 
 const paymentRouter = Router();
 
-paymentRouter.post('/create-order',createOrder);
+paymentRouter.post('/create-order',protect,createOrder);
 paymentRouter.post('/verify',protect,verify)
 
 export default paymentRouter;

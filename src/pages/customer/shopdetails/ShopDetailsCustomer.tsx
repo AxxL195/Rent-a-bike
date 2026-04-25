@@ -6,7 +6,6 @@ import {
   Phone,
   Mail,
   Clock,
-  Star,
   Bike as BikeIcon,
   Loader,
   AlertCircle,

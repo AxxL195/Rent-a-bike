@@ -243,7 +243,7 @@ const OwnerDashboard: React.FC = () => {
                     {/* Action buttons */}
                     <div className="mt-4 flex gap-3">
                       <Link
-                        to={`/owner/${shop.id}/bikes/create`}
+                        to={`/owner/${ownerId}/${shop.id}/bikes/create`}
                         className="flex-1 text-center border border-emerald-600 text-emerald-600 py-2 rounded-lg hover:bg-emerald-50 transition"
                       >
                         Add Bike
