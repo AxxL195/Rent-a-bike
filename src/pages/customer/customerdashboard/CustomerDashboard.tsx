@@ -1,6 +1,6 @@
 // src/pages/customer/CustomerDashboard.tsx
 import React, { useState, useEffect } from 'react';
-import { Map, ChevronRight, Loader } from 'lucide-react';
+import { Map, ChevronRight, Loader, ArrowLeft } from 'lucide-react';
 // import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './Navbar';
@@ -14,13 +14,12 @@ const CustomerDashboard: React.FC = () => {
   // const navigate = useNavigate();
   const [shops, setShops] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [hasSearched, setHasSearched] = useState(false);
+  
   const [error, setError] = useState<string | null>(null);
 
-  // Load nearby shops automatically on mount using geolocation
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      navigator.geolocation.watchPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
           console.log('User location:', latitude, longitude);
@@ -48,35 +47,18 @@ const CustomerDashboard: React.FC = () => {
             
           } catch (err: any) {
             console.log('Failed to load nearby shops:', err);
-            // Fallback to mock data in development
-            if (import.meta.env.DEV) {
-              // setShops(mockShops);
-              
-            } else {
-              setError('Unable to load shops. Please try searching manually.');
-            }
+            setError('Unable to load shops. Please try searching manually.');
           } finally {
             setLoading(false);
           }
         },
         (error) => {
           console.error('Geolocation error:', error);
-          // Fallback to mock data in development
-          if (import.meta.env.DEV) {
-            // setShops(mockShops);
-            
-          } else {
-            setError('Location access denied. Please search manually.');
-          }
+          setError('Location access denied. Please search manually.');
           setLoading(false);
         }
       );
     } else {
-      // Geolocation not supported, use mock data
-      if (import.meta.env.DEV) {
-        // setShops(mockShops);
-        
-      }
       setLoading(false);
     }
   }, []);
@@ -91,6 +73,7 @@ const CustomerDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 antialiased">
       <Navbar />
+      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Search onSearchResults={handleSearchResults} onLoading={setLoading} />
 

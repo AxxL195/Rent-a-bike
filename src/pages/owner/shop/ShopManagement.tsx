@@ -1,4 +1,3 @@
-// src/pages/owner/ShopManagement.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -41,7 +40,7 @@ interface Bike {
 }
 
 const ShopManagement: React.FC = () => {
-  const {ownerId, shopId } = useParams<{ ownerId: string; shopId: string }>();
+  const {ownerId, shopId } = useParams<{ ownerId: string; shopId: string}>();
  
   const navigate = useNavigate();
 
@@ -60,8 +59,7 @@ const ShopManagement: React.FC = () => {
     }
 
     const fetchData = async () => {
-      console.log("Owner ID from params:", ownerId);
-      console.log("Shop ID from params:", shopId);
+      
       try {
         const [shopRes, bikesRes] = await Promise.all([
           axios.get(`http://localhost:5000/api/v1/shops/myshops/${shopId}`,{
@@ -76,16 +74,8 @@ const ShopManagement: React.FC = () => {
           })
         ]);
 
-        console.log('Shop API response:', shopRes.data);
-        console.log('Bikes API response:', bikesRes.data);
         setShop(shopRes.data.data || shopRes.data);
-        const bikesData= bikesRes.data.data || bikesRes.data;
-        setBikes(
-            bikesData.map((bike: any) => ({
-              ...bike,
-              id: bike._id   
-        }))
-      );
+        setBikes(bikesRes.data.data || bikesRes.data);
         setError(null);
       } catch (err: any) {
         console.error('API error:', err);
@@ -117,6 +107,20 @@ const ShopManagement: React.FC = () => {
       alert(err.response?.data?.message || 'Delete failed');
     }
   };
+
+  const handleEditBike = async (bikeId:string)=>{
+    
+    try{
+      const response= await axios.get(`http://localhost:5000/api/v1/bikes/bikeinfo/${bikeId}`,{
+        headers:{
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      console.log("details after fetching",response.data);
+    }catch(err:any){
+      alert(err.response?.data?.message || 'edit failed');
+    }
+  }
 
   // Show loading state
   if (loading) {
@@ -178,7 +182,7 @@ const ShopManagement: React.FC = () => {
               <p className="text-gray-600 mt-1">Manage shop details and bike inventory</p>
             </div>
             <Link
-              to={`/owner/shop/${shop.id}/edit`}
+              to={`/owner/${ownerId}/shop/${shop.id}/edit`}
               className="flex items-center gap-2 px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition"
             >
               <Edit className="h-4 w-4" /> Edit Shop
@@ -217,7 +221,7 @@ const ShopManagement: React.FC = () => {
               <p className="text-gray-500 text-sm mt-1">Manage your bike inventory</p>
             </div>
             <Link
-              to={`/owner/shop/${shop.id}/bikes/new`}
+              to={`/owner/${shop.id}/bikes/create`}
               className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow-md"
             >
               <PlusCircle className="h-4 w-4" /> Add New Bike
@@ -230,7 +234,7 @@ const ShopManagement: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-800">No bikes yet</h3>
               <p className="text-gray-600 mt-2">Add your first bike to start listing.</p>
               <Link
-                to={`/owner/shop/${shop.id}/bikes/new`}
+                to={`/owner/${shop.id}/bikes/create`}
                 className="mt-4 inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
               >
                 <PlusCircle className="h-4 w-4" /> Add Bike
@@ -278,13 +282,17 @@ const ShopManagement: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex justify-end gap-2">
                           <Link
-                            to={`/owner/shop/${shop.id}/bikes/${bike.id}/edit`}
+                            to={`/owner/${ownerId}/shop/${shopId}/bikes/${bike.id}/edit`}
                             className="p-1 text-emerald-600 hover:text-emerald-800 transition"
                           >
-                            <Edit className="h-4 w-4" />
+                            <button onClick={async() => handleEditBike(bike.id)}>
+                              <Edit className="h-4 w-4" />
+                            </button>
                           </Link>
                           <button
-                            onClick={() => handleDeleteBike(bike.id)}
+                            onClick={() => {
+                              console.log(bike.id)
+                              handleDeleteBike(bike.id)}}
                             className="p-1 text-red-600 hover:text-red-800 transition"
                           >
                             <Trash2 className="h-4 w-4" />

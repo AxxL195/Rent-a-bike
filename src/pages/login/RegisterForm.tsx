@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const RegisterForm = (props: any) => {
@@ -6,6 +6,11 @@ const RegisterForm = (props: any) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState("customer");
+  const [error,setError] = useState("");
+
+  useEffect(() => {
+    setError("");
+  }, [email, password]);
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -33,8 +38,8 @@ const RegisterForm = (props: any) => {
         window.location.href = `/customer/${user._id}/dashboard`;
       else if (role === "owner")
         window.location.href = `/owner/${user._id}/dashboard`;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Login Failed");
     }
   };
 
@@ -74,6 +79,28 @@ const RegisterForm = (props: any) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+
+        {/* Improved Error Display */}
+        {error && (
+          <div
+            className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm animate-fade-in"
+            role="alert"
+          >
+            <span className="text-red-500 text-base" aria-hidden="true">
+              ⚠️
+            </span>
+            <span className="flex-1 text-left">{error}</span>
+            <button
+              type="button"
+              onClick={() => setError("")}
+              className="text-red-500 hover:text-red-700 transition-colors ml-auto"
+              aria-label="Dismiss error"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <div className="w-full mb-6 px-4">
           <div className="flex gap-3">
             <button

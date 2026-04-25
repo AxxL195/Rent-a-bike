@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { startSession } from 'mongoose';
 import Shop from '../models/shop.model.js';
 import Bike from '../models/bike.model.js';
 import Booking from '../models/booking.model.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { FlatESLint } from 'eslint/use-at-your-own-risk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +22,6 @@ const findImageFile = (storedFilename) => {
     // Check if file exists as-is (new format with timestamp)
     const fullPath = path.join(uploadsDir, storedFilename);
     if (fs.existsSync(fullPath)) {
-      console.log(`✓ Found shop image file directly: ${storedFilename}`);
       return storedFilename;
     }
     
@@ -30,7 +30,6 @@ const findImageFile = (storedFilename) => {
     const matchedFile = files.find(file => file.endsWith(storedFilename));
     
     if (matchedFile) {
-      console.log(`✓ Found matching shop file for ${storedFilename}: ${matchedFile}`);
       return matchedFile;
     }
     
@@ -46,11 +45,8 @@ const findImageFile = (storedFilename) => {
 export const createShop = async (req,res) =>{
     const session = await mongoose.startSession();
     session.startTransaction();
-    console.log("user:", req.user);
 
     try{
-        console.log("Request body:", req.body);
-        console.log("Request files:", req.files);
         const {name, address, city, pincode, phone, email, openingHours, closingHours, latitude, longitude} = req.body;
 
         if(!name || !address || !city || !pincode || !phone || !openingHours || !closingHours || !latitude || !longitude) {
@@ -58,7 +54,7 @@ export const createShop = async (req,res) =>{
         }
 
         const imageURLs = (req.files || []).map((file) => file.filename);
-        console.log("Creating shop for user:", req.user._id);
+        
         const newShop = await Shop.create([{ owner: req.user._id, name, address, city, pincode, phone, email, openingHours, closingHours, location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }, images: imageURLs }], {session});
 
         await session.commitTransaction();
@@ -97,7 +93,7 @@ export const myshops = async (req, res) => {
             status: { $in: ["pending", "confirmed"] }, // active only
             endDate: { $gte: new Date() } // not expired
           });
-
+        
         return {
           owner: shop.owner,
           id: shop._id,
@@ -305,5 +301,155 @@ export const shopDetails = async (req, res) => {
   }catch(error){
     console.error('Error fetching shop details:', error);
     return res.status(500).json({ success: false, message: 'Failed to fetch shop details' });
+  }
+}
+
+export const deleteShop = async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
+  try{
+    const { shopId } =req.params;
+
+    if(!mongoose.isValidObjectId(shopId)){
+      session.abortTransaction();
+      return res.status(400).json({ success: false, message: 'Invalid shop ID' });
+    }
+
+    const shop = await Shop.findById(shopId);
+    if(!shop){
+      session.abortTransaction();
+      return res.status(404).json({ success: false, message: 'Shop not found' });
+    }
+
+    if(shop.owner.toString()!== req.user._id.toString()){
+      session.abortTransaction();
+      return res.status(403).json({ success: false, message: 'Access denied to this shop' });
+    }
+
+    await Shop.findByIdAndDelete(shopId);
+    await Bike.deleteMany({ shop: shopId });
+    await Booking.deleteMany({ shop: shopId });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(200).json({success:true, message: 'Shop and associated bikes and bookings deleted successfully'});
+  
+  }catch(error){
+    await session.abortTransaction();
+    session.endSession();
+    console.error('error deleting shop:', error);
+    return res.status(500).json({ success: false, message: 'Failed to delete shop' });
+  }
+}
+
+export const update = async (req,res) => {
+  const session= await mongoose.startSession();
+  session.startTransaction();
+  try{
+    const {shopId}= req.params
+
+    if(!mongoose.isValidObjectId(shopId)){
+      session.abortTransaction();
+      return res.error(400).json({
+        success: false,
+        message: "invalid Id"
+      })
+    }
+
+    const shop= await Shop.findById(shopId).session(session);
+
+    if(!shop){
+      session.abortTransaction();
+      return res.error(404).json({
+        success:false,
+        message:"shop not found"
+      })
+    }
+
+    const allowedUpdates = [
+      "name",
+      "address",
+      "city",
+      "pincode",
+      "phone",
+      "email",
+      "openingHours",
+      "closingHours",
+      "images",
+      "location"
+    ];
+
+    const filteredUpdates = {}
+    Object.keys(req.body).forEach((key) => {
+      if (allowedUpdates.includes(key)) {
+        filteredUpdates[key] = req.body[key];
+      }
+    });
+
+    Object.assign(shop,filteredUpdates);
+
+    await shop.save({session})
+
+    await session.commitTransaction();
+    res.status(200).json({
+      success:true,
+      message: "shop updated successfully",
+      shop,
+    })
+
+  }catch(error){
+    console.error("error editing the shop details:",error);
+    res.status(500).json({
+      success:false,
+      message:"failed to edit the details"
+    })
+  }finally{
+    session.endSession();
+  }
+}
+
+export const getInfo = async(req,res) => {
+  try{
+    const {shopId} = req.params;
+
+    if(!mongoose.isValidObjectId(shopId)){
+      return res.error(400).json({
+        success: false,
+        message: "invalid Id"
+      })
+    }
+
+    const shop= await Shop.findById(shopId);
+
+    if(!shop){
+      return res.status(404).json({ success: false, message: 'Shop not found' });
+    }
+
+    const images = (shop.images || []).map(img => findImageFile(img)).filter(img => img !== null);
+
+    const result= {
+      id: shop._id,
+      owner: shop.owner,
+      name: shop.name,
+      address: shop.address,
+      city: shop.city,
+      pincode: shop.pincode,
+      phone: shop.phone,
+      email: shop.email,
+      openingHours: shop.openingHours,
+      closingHours: shop.closingHours,
+      location:shop.location,
+      images: images,
+    }
+    
+    res.json(result);
+  }catch(error){
+    console.error("error fetching the bike details:",error);
+    res.status(500).json({
+      success:false,
+      message:"faild to get the details"
+    })
   }
 }

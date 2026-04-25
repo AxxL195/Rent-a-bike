@@ -1,9 +1,10 @@
-
 import { Bike, Users, MapPin, Calendar, Sparkles, Clock, LayoutDashboard, CheckCircle, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import LoginModal from '../../utils/LoginModal';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
+  const navigate= useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const[loginOpen,setLoginOpen] = useState(false);
 
@@ -108,11 +109,11 @@ const LandingPage = () => {
                 Centralized bike and scooty rentals. Whether you're a rider looking for your next adventure or an owner wanting to list your fleet, we've got you covered.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                <button onClick={()=>setLoginOpen(true)} className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                   <Bike className="h-5 w-5" />
                   I'm a Customer
                 </button>
-                <button className="group bg-white border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                <button onClick={()=>setLoginOpen(true)} className="group bg-white border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                   <Users className="h-5 w-5" />
                   I'm a Rental Owner
                 </button>
@@ -271,11 +272,11 @@ const LandingPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Start your journey today</h2>
           <p className="text-lg text-emerald-100 mb-8">Join thousands of riders and owners on Rent-A-Bike.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-emerald-700 hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+            <button onClick={()=>setLoginOpen(true)} className="bg-white text-emerald-700 hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
               <Bike className="h-5 w-5" />
               Sign up as Customer
             </button>
-            <button className="bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-emerald-400">
+            <button onClick={()=>setLoginOpen(true)} className="bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-emerald-400">
               <Users className="h-5 w-5" />
               Sign up as Owner
             </button>

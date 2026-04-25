@@ -4,8 +4,6 @@ import Bike from "../models/bike.model.js";
 import mongoose from "mongoose";
 
 export const createBooking = async (req,res) =>{
-    console.log("data",req.body);
-    console.log("user", req.user._id);
     try{
         const {
             bikeId,

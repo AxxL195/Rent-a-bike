@@ -185,24 +185,14 @@ const BikeDetailsCustomer: React.FC = () => {
                   {bike.availability.toUpperCase()}
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-2">
-                <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                {/* <span className="font-medium">{bike.shop.rating}</span> */}
-                <span className="text-gray-400">•</span>
-                {/* <Link to={`/shop/${bike.shop.id}`} className="text-emerald-600 hover:underline">
-                  {bike.shop.name}
-                </Link> */}
-              </div>
+              
             </div>
 
             {/* Price */}
             <div className="bg-emerald-50 rounded-xl p-4 flex items-baseline justify-between">
               <div>
                 <span className="text-sm text-gray-600">Rent per day</span>
-                <p className="text-3xl font-bold text-emerald-600">${bike.pricePerDay}</p>
-              </div>
-              <div className="text-right">
-                <span className="text-sm text-gray-600">+ taxes</span>
+                <p className="text-3xl font-bold text-emerald-600">₹{bike.pricePerDay}</p>
               </div>
             </div>
 

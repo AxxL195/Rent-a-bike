@@ -10,6 +10,7 @@ import {
   Bike as BikeIcon,
   Loader,
   AlertCircle,
+  ArrowLeft,
 } from 'lucide-react';
 import Navbar from '../customerdashboard/Navbar';
 
@@ -105,6 +106,7 @@ const ShopDetailsCustomer: React.FC = () => {
         <Navbar />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="bg-red-50 text-red-600 p-6 rounded-2xl flex flex-col items-center gap-2 max-w-md text-center">
+            
             <AlertCircle className="h-10 w-10" />
             <p className="text-lg font-semibold">Oops! Something went wrong</p>
             <p>{error || 'Shop not found'}</p>
@@ -125,7 +127,13 @@ const ShopDetailsCustomer: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section with Image and Overlay */}
+      <button
+            onClick={() => navigate(`/customer/${customerId}/dashboard`)}
+            className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 mb-6 transition"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+          </button>
+        
         <div className="relative rounded-2xl overflow-hidden shadow-lg mb-8 h-64 md:h-96">
           <img
             src={shop.images?.[0] ? `http://localhost:5000/uploads/${shop.images[0]}` : 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'}
@@ -140,11 +148,6 @@ const ShopDetailsCustomer: React.FC = () => {
             <div className="p-6 text-white">
               <h1 className="text-3xl md:text-4xl font-bold">{shop.name}</h1>
               <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{shop.rating}</span>
-                  <span className="text-xs">({shop.totalRatings} reviews)</span>
-                </div>
                 <span className="text-sm bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
                   {bikes.length} bikes available
                 </span>

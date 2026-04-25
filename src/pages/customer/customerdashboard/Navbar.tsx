@@ -8,10 +8,11 @@ import {
   Search,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SearchModal from "../../../utils/SearchModel";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { customerId } = useParams<{ customerId: string }>();
   // console.log("Customer ID in Navbar:", customerId);
 
@@ -20,6 +21,11 @@ const Navbar = () => {
 
   const openSearchModal = () => setIsSearchModalOpen(true);
   const closeSearchModal = () => setIsSearchModalOpen(false);
+
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    navigate("/",{replace:true})
+  }
 
   return (
     <>
@@ -75,6 +81,7 @@ const Navbar = () => {
                     <User className="h-4 w-4" /> Profile
                   </Link>
                   <Link
+                    onClick={handleLogout}
                     to="/"
                     className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition"
                   >

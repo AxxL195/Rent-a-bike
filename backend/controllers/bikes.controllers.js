@@ -21,7 +21,6 @@ const findImageFile = (storedFilename) => {
     // Check if file exists as-is (new format with timestamp)
     const fullPath = path.join(uploadsDir, storedFilename);
     if (fs.existsSync(fullPath)) {
-      console.log(`✓ Found image file directly: ${storedFilename}`);
       return storedFilename;
     }
     
@@ -30,12 +29,10 @@ const findImageFile = (storedFilename) => {
     const matchedFile = files.find(file => file.endsWith(storedFilename));
     
     if (matchedFile) {
-      console.log(`✓ Found matching file for ${storedFilename}: ${matchedFile}`);
       return matchedFile;
     }
     
-    console.warn(`✗ No file found for stored filename: ${storedFilename}`);
-    console.warn(`  Available files count: ${files.length}`);
+
     return null;
   } catch (error) {
     console.error('Error finding image file:', error.message);
@@ -46,11 +43,7 @@ const findImageFile = (storedFilename) => {
 export const createBike = async (req,res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
-    console.log("user:", req.user);
-
     try{
-        console.log("Request body:", req.body);
-        console.log("Request files:", req.files);
         const {name, type, transmission, pricePerDay, description, availability, shopId} = req.body;
 
         if(!shopId || !mongoose.isValidObjectId(shopId)) {
@@ -58,9 +51,6 @@ export const createBike = async (req,res) => {
         }
 
         const shop = await Shop.findById(shopId);
-        console.log("Shop found:", shop);
-        console.log("Shop found:", shop._id);
-        console.log("Shop found:", shop.owner);
 
         if(!shop) {
             return res.status(404).json({ success: false, message: 'Shop not found' });
@@ -71,15 +61,10 @@ export const createBike = async (req,res) => {
         }
 
         const imageURLs = (req.files || []).map((file) => file.filename);
-        console.log("Creating bike for shop:", shop._id);
-        console.log("Image files received:", req.files?.length || 0);
-        console.log("Image filenames to save:", imageURLs);
         const newBike = await Bike.create([{ shop: shop._id, name, type, transmission, pricePerDay, description, images: imageURLs, availability }], {session});
 
         await session.commitTransaction();
         session.endSession();
-        console.log("New bike created with ID:", newBike[0]._id);
-        console.log("New bike images:", newBike[0].images);
         return res.status(201).json({   
             success: true,
             message: "Bike created successfully",
@@ -97,7 +82,6 @@ export const createBike = async (req,res) => {
 export const getBikesByShop = async (req, res) => {
   try {
     const { shopId } = req.params;
-    console.log("Fetching bikes for shopId:", shopId);
     if (!mongoose.isValidObjectId(shopId)) {
       return res.status(400).json({
         success: false,
@@ -122,21 +106,9 @@ export const getBikesByShop = async (req, res) => {
     }
 
     const bikes = await Bike.find({ shop: shopId }).lean();
-    console.log(`\n========== getBikesByShop Debug ==========`);
-    console.log(`Found ${bikes.length} bikes for shop ${shopId}`);
-    console.log(`Raw bikes from DB:`, JSON.stringify(bikes.map(b => ({
-      id: b._id,
-      name: b.name,
-      images: b.images,
-      imagesCount: b.images?.length || 0
-    })), null, 2));
     
-    const result = bikes.map(bike => {
-      console.log(`\nProcessing bike: "${bike.name}"`);
-      console.log(`  Stored images:`, bike.images);
-      
+    const result = bikes.map(bike => {      
       if (!bike.images || bike.images.length === 0) {
-        console.log(`  ⚠️  No images stored in DB for this bike!`);
         return {
           id: bike._id,
           name: bike.name,
@@ -150,13 +122,12 @@ export const getBikesByShop = async (req, res) => {
       }
       
       const processedImages = (bike.images || []).map(img => {
-        console.log(`    Processing image: "${img}"`);
+        
         const found = findImageFile(img);
-        console.log(`      Result: ${found ? '✓ ' + found : '✗ Not found'}`);
+        
         return found;
       }).filter(img => img !== null);
-      
-      console.log(`  Final processed images:`, processedImages);
+
       return {
         id: bike._id,
         name: bike.name,
@@ -168,9 +139,6 @@ export const getBikesByShop = async (req, res) => {
         availability: bike.availability
       };
     });
-
-    console.log(`\n✓ Returning to client:`, JSON.stringify(result.map(b => ({ name: b.name, imageCount: b.images.length })), null, 2));
-    console.log(`==========================================\n`);
     res.json(result);
   } catch (error) {
     console.error("Error fetching bikes by shop:", error);
@@ -190,6 +158,7 @@ export const deleteBike = async (req, res) => {
         }
 
         const bike = await Bike.findById(bikeId);
+
         if (!bike) {
             return res.status(404).json({ success: false, message: 'Bike not found' });
         }
@@ -203,7 +172,10 @@ export const deleteBike = async (req, res) => {
             return res.status(403).json({ success: false, message: 'You are not authorized to delete this bike' });
         }
 
-        await bike.remove();
+        // const booking = await Booking.findById(bikeId);
+
+        await Bike.findByIdAndDelete(bikeId);
+        await Booking.deleteMany({bike: bikeId});
         return res.status(200).json({ success: true, message: 'Bike deleted successfully' });
     } catch (error) {
         console.error('Error deleting bike:', error);
@@ -256,7 +228,7 @@ export const getBikeDetailsForCustomer = async (req, res) => {
     }
 
     const bike = await Bike.findById(bikeId)
-      .populate('shop')   // 🔥 IMPORTANT
+      .populate('shop')  
       .lean();
 
     if (!bike) {
@@ -274,6 +246,8 @@ export const getBikeDetailsForCustomer = async (req, res) => {
       id: bike._id,
       name: bike.name,
       pricePerDay: bike.pricePerDay,
+      type:bike.type,
+      transmission:bike.transmission,
       images: images,
       description: bike.description,
       availability: bike.availability,
@@ -291,3 +265,107 @@ export const getBikeDetailsForCustomer = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch bike details' });
   }
 };
+
+export const update = async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  console.log("bike details",req.body)
+  try{
+    const {bikeId} = req.params;
+    if(!mongoose.isValidObjectId(bikeId)){
+      session.abortTransaction();
+      return res.error(400).json({
+        success: false,
+        message: "Invalid Id"
+      })
+    }
+
+    const bike= await Bike.findById(bikeId).session(session);
+    
+    if(!bike){
+      session.abortTransaction();
+      return res.error(404).json({
+        success: false,
+        message: "bike not found"
+      })
+    }
+
+    const allowedUpdates = [
+      "name",
+      "type",
+      "transmission",
+      "pricePerDay",
+      "description",
+      "images",
+      "availability",
+    ];
+
+    const filteredUpdates = {};
+
+    Object.keys(req.body).forEach((key) => {
+      if (allowedUpdates.includes(key)) {
+        filteredUpdates[key] = req.body[key];
+      }
+    });
+
+    Object.assign(bike, filteredUpdates);
+
+    await bike.save({session})
+
+    await session.commitTransaction();
+
+    res.status(200).json({
+      success:true,
+      message: "bike updated successfully",
+      bike,
+    })
+  }catch(error){
+    console.error("error editing the bike details:",error);
+    res.status(500).json({
+      success:false,
+      message:"failed to edit the details"
+    })
+  }finally{
+    session.endSession();
+  }
+}
+
+export const getInfo = async (req,res) => {
+  
+  try{
+    const {bikeId}= req.params;
+    
+    if(!mongoose.isValidObjectId(bikeId)){
+      return res.error(404).json({
+        success: false,
+        message: "Invalid Id"
+      })
+    }
+
+    const bike= await Bike.findById(bikeId);
+    if (!bike) {
+      return res.status(404).json({ success: false, message: 'bike not found' });
+    }
+
+    const images = (bike.images || []).map(img => findImageFile(img)).filter(img => img !== null);
+
+    const result = {
+                    id: bike._id,
+                    name: bike.name,
+                    type: bike.type,  
+                    transmission: bike.transmission,
+                    pricePerDay: bike.pricePerDay,
+                    description: bike.description,
+                    images: images,  
+                    availability: bike.availability,
+                }
+    
+    res.json(result);
+  }catch(error){
+    console.error("error fetching the bike details:",error);
+    res.status(500).json({
+      success:false,
+      message:"faild to get the details"
+    })
+  }
+}

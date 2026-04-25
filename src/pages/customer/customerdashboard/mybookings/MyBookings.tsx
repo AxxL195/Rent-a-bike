@@ -10,9 +10,9 @@ import {
   Loader,
   AlertCircle,
   MapPin,
-  ChevronRight,
 } from 'lucide-react';
 import Navbar from '../Navbar';
+import { useParams } from 'react-router-dom';
 
 interface Booking {
   _id: string;
@@ -34,6 +34,7 @@ interface Booking {
 }
 
 const MyBookings: React.FC = () => {
+  const {customerId} = useParams<{ customerId: string}>();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,10 +82,9 @@ const MyBookings: React.FC = () => {
   const BookingCard = ({ booking }: { booking: Booking }) => {
     const StatusIcon = statusConfig[booking.status].icon;
     return (
-      <Link to={`/booking/${booking._id}`} className="block">
         <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-5 mb-5 border border-gray-100 group">
           <div className="flex flex-col md:flex-row gap-5">
-            {/* Image */}
+            
             <div className="relative w-full md:w-32 h-28 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
               <img
                 src={
@@ -96,7 +96,7 @@ const MyBookings: React.FC = () => {
               />
             </div>
 
-            {/* Details */}
+            
             <div className="flex-1">
               <div className="flex flex-wrap justify-between items-start gap-2">
                 <div>
@@ -138,13 +138,7 @@ const MyBookings: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
-            <span className="text-emerald-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-              View Details <ChevronRight className="h-4 w-4" />
-            </span>
-          </div>
         </div>
-      </Link>
     );
   };
 
@@ -188,7 +182,7 @@ const MyBookings: React.FC = () => {
           <p className="text-gray-600 mt-1">Track your rental requests and upcoming rides</p>
         </div>
 
-        {/* Tabs */}
+        
         <div className="flex gap-2 mb-6 border-b border-gray-200 pb-1">
           <button
             onClick={() => setActiveTab('current')}
@@ -234,7 +228,7 @@ const MyBookings: React.FC = () => {
             </p>
             {activeTab === 'current' && (
               <Link
-                to="/dashboard"
+                to={`/customer/${customerId}/dashboard`}
                 className="mt-6 inline-block bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-medium transition shadow-md"
               >
                 Browse Shops

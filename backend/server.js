@@ -11,10 +11,12 @@ import loginRouter from './routes/login.routes.js';
 import shopRouter from './routes/shop.routes.js';
 import bikesRouter from './routes/bikes.routes.js';
 import bookingRouter from './routes/booking.routes.js';
+import userRouter from "./routes/user.routes.js";
 
 import cors from 'cors';
 
 import connecttoDB from '../database/mongodb.js';
+import paymentRouter from "./routes/payment.routes.js";
 
 const app = express();
 
@@ -32,11 +34,8 @@ app.use('/api/v1/auth',loginRouter);
 app.use('/api/v1/shops', shopRouter);
 app.use('/api/v1/bikes', bikesRouter);
 app.use('/api/v1/bookings', bookingRouter);
-
-//test api route
-app.get('/',(req,res) =>{
-    res.send("Welcome to Rent-a-Bike API");
-})
+app.use('/api/v1/user',userRouter);
+app.use('/api/v1/payment',paymentRouter);
 
 app.listen(PORT, async ()=>{
     await connecttoDB();

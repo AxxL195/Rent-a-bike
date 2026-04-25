@@ -5,10 +5,16 @@ import {
   LogOut,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [profileDropdown, setProfileDropdown] = useState(false);
+
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    navigate("/",{replace:true})
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
@@ -45,9 +51,12 @@ const Navbar = () => {
                   <User className="h-4 w-4" /> Profile
                 </Link>
                 
-                <Link to="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition">
+                
+
+                <Link onClick={handleLogout} to="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition">
                   <LogOut className="h-4 w-4" /> Logout
                 </Link>
+                
               </div>
             )}
           </div>

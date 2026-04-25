@@ -28,6 +28,8 @@ const AppRoutes = () => {
       <Route path="/customer/:customerId/:shopId/:bikeId" element={<BikeDetailsCustomer />} />
       <Route path="/customer/:customerId/:shopId/:bikeId/checkout" element={<Checkout/>}/>
       <Route path="/customer/:customerId/my-bookings" element={<MyBookings/>} />
+      <Route path="/owner/:ownerId/shop/:shopId/bikes/:bikeId/edit" element={<BikeForm/>} />
+      <Route path="/owner/:ownerId/shop/:shopId/edit" element={<ShopForm/>} />
     </Routes>
   )
 }

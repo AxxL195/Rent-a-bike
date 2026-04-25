@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const BikeForm: React.FC = () => {
-  const { shopId, bikeId } = useParams<{ shopId: string; bikeId: string }>();
+  const { shopId, bikeId ,ownerId} = useParams<{ shopId: string; bikeId: string; ownerId: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,13 +19,12 @@ const BikeForm: React.FC = () => {
   });
   const [images, setImages] = useState<FileList | null>(null);
 
-  // If editing, fetch existing bike data
   useEffect(() => {
     if (bikeId) {
       const fetchBike = async () => {
         setLoading(true);
         try {
-          const response = await axios.get(`/api/bikes/${bikeId}`);
+          const response = await axios.get(`http://localhost:5000/api/v1/bikes/bikeinfo/${bikeId}`);
           const bike = response.data;
           setFormData({
             name: bike.name,
@@ -78,38 +77,31 @@ const BikeForm: React.FC = () => {
       for (let i = 0; i < images.length; i++) {
         submitData.append('images', images[i]);
       }
-    } else if (imagePreviews.length > 0 && !bikeId) {
-      // For new bike without selected images, we might need to handle required field
     }
 
-    console.log(shopId)
     try {
-      console.log('📤 Submitting bike form');
-      console.log('  shopId:', shopId);
-      console.log('  Images count:', images?.length || 0);
-      console.log('  Form data:', formData);
-      console.log('  bikeId:', bikeId);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError("User not logged in");
+        return;
+      }
       
       if (bikeId) {
-        await axios.put(`http://localhost:5000/api/v1/bikes/bikeAdd/${shopId}`, submitData, {
+        await axios.put(`http://localhost:5000/api/v1/bikes/update/${bikeId}`, submitData, {
           headers: { 
             'Content-Type': 'multipart/form-data', 
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${token}`
           },
-        
         });
       } else { 
-        console.log('📨 POST request to create bike');
-        const response = await axios.post('http://localhost:5000/api/v1/bikes/bikeAdd', submitData, {
+        await axios.post('http://localhost:5000/api/v1/bikes/bikeAdd', submitData, {
           headers: { 
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-
+            Authorization: `Bearer ${token}`
           },
         });
-        console.log('✓ Bike created successfully:', response.data);
       }
-      navigate(`/owner/shop/${shopId}/bikes`);
+      navigate(`/owner/${ownerId}/shops/${shopId}/bikes`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to save bike');
     } finally {
@@ -242,7 +234,7 @@ const BikeForm: React.FC = () => {
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
               <button
                 type="button"
-                onClick={() => navigate(`/owner/shop/${shopId}/bikes`)}
+                onClick={() => navigate(-1)}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
               >
                 Cancel
