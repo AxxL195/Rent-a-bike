@@ -1,7 +1,7 @@
 import { Bike, Users, MapPin, Calendar, Sparkles, Clock, LayoutDashboard, CheckCircle, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import LoginModal from '../../utils/LoginModal';
-import { useNavigate } from 'react-router-dom';
+
 
 const LandingPage = () => {
   
