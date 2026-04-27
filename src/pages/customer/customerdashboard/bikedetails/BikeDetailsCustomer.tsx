@@ -258,17 +258,17 @@ const BikeDetailsCustomer: React.FC = () => {
               </Link>
             </div>
 
-            {/* Book Now Button */}
+            
             <button
               onClick={handleBookNow}
-              disabled={bike.availability === 'booked'}
+              disabled={bike.availability === 'booked' || bike.availability === 'unavailable'}
               className={`w-full py-3 rounded-xl font-semibold transition shadow-md ${
                 bike.availability === 'booked'
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  : bike.availability === 'unavailable' ? 'bg-gray-300 text-gray-500 cursor-not-allowed' :'bg-emerald-600 hover:bg-emerald-700 text-white'
               }`}
             >
-              {bike.availability === 'booked' ? 'Currently Booked' : 'Book Now'}
+              {bike.availability === 'booked' ? 'Currently Booked' : bike.availability === 'unavailable' ? 'Unavailable' : 'Book Now'}
             </button>
 
             {/* Safety Note */}

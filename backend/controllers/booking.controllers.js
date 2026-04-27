@@ -20,6 +20,17 @@ export const createBooking = async (req, res) => {
 
     const bike=await Bike.findById(bikeId);
 
+    if (!bike) {
+      return res.status(404).json({
+        success: false,
+        message: "bike not found",
+      });
+    }
+
+    bike.availability = "unavailable"
+
+    await bike.save();
+
     const price=bike.pricePerDay;
 
     const totalPrice=days*price;

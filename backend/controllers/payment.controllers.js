@@ -1,4 +1,3 @@
-import { generateKey } from "crypto";
 import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from "../config/env.js";
 import razorpay from "../config/razorpay.js";
 import Bike from "../models/bike.model.js";
@@ -61,7 +60,6 @@ export const verify = async (req, res) => {
   try {
     const {
       bookingId,
-      order_id,
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
@@ -105,16 +103,8 @@ export const verify = async (req, res) => {
         success: true,
         message: "Payment verified",
       });
-    } else {
-      booking.status = "cancelled";
-
-      await booking.save();
-
-      if (booking.status === "cancelled") {
-        await Bike.findByIdAndUpdate(booking.bike._id, {
-          availability: "available",
-        });
-      }
+    } 
+    else {
       return res.status(400).json({
         success: false,
         message: "Invalid signature",

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -46,14 +45,11 @@ const bookingSchema = new mongoose.Schema(
       default: "pending",
       required: true,
     },
-    ownerConfirmedAt: {
+    expiresAt:{ 
       type: Date,
-    },
-    customerNote: {
-      type: String,
-      trim: true,
-      maxlength: 500,
-    },
+      default: () => new Date(Date.now() + 10 * 60 * 1000),
+      index:true,
+    }
   },
   { timestamps: true },
 );

@@ -17,6 +17,7 @@ import cors from 'cors';
 
 import connecttoDB from '../database/mongodb.js';
 import paymentRouter from "./routes/payment.routes.js";
+import { startBookingCleanUp } from "./jobs/bookingCleanup.job.js";
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use('/api/v1/bikes', bikesRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/user',userRouter);
 app.use('/api/v1/payment',paymentRouter);
+
+startBookingCleanUp();
 
 app.listen(PORT, async ()=>{
     await connecttoDB();

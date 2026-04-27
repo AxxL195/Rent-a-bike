@@ -352,17 +352,14 @@ export const update = async (req,res) => {
 
     if(!mongoose.isValidObjectId(shopId)){
       session.abortTransaction();
-      return res.error(400).json({
-        success: false,
-        message: "invalid Id"
-      })
+      return res.status(400).json({ success: false, message: 'Valid bikeId is required' });
     }
 
     const shop= await Shop.findById(shopId).session(session);
 
     if(!shop){
       session.abortTransaction();
-      return res.error(404).json({
+      return res.status(404).json({
         success:false,
         message:"shop not found"
       })
@@ -415,10 +412,7 @@ export const getInfo = async(req,res) => {
     const {shopId} = req.params;
 
     if(!mongoose.isValidObjectId(shopId)){
-      return res.error(400).json({
-        success: false,
-        message: "invalid Id"
-      })
+      return res.status(400).json({ success: false, message: 'Valid bikeId is required' });
     }
 
     const shop= await Shop.findById(shopId);

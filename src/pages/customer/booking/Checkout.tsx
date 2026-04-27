@@ -83,7 +83,7 @@ const Checkout: React.FC = () => {
     };
 
     const getdetails = async () => {
-      // Pre-fill customer info from localStorage if available
+      
       try {
         const userdetails = await axios.get(
           `http://localhost:5000/api/v1/user/customerdetails/${customerId}`,
