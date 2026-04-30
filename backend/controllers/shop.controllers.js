@@ -195,7 +195,7 @@ export const nearbyShops = async (req, res) => {
           distanceField: 'distance',
           spherical: true,
           key: 'location',
-          maxDistance: 10000000
+          maxDistance: 10000
         }
       },
       {

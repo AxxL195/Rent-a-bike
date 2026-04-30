@@ -85,7 +85,7 @@ const MyBookings: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-5 mb-5 border border-gray-100 group">
           <div className="flex flex-col md:flex-row gap-5">
             
-            <div className="relative w-full md:w-32 h-28 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+            {/* <div className="relative w-full md:w-32 h-28 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
               <img
                 src={
                   booking.bike?.images?.[0] ||
@@ -94,9 +94,8 @@ const MyBookings: React.FC = () => {
                 alt={booking.bike?.name || 'Bike'}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
-            </div>
+            </div> */}
 
-            
             <div className="flex-1">
               <div className="flex flex-wrap justify-between items-start gap-2">
                 <div>

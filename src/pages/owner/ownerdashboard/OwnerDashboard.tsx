@@ -153,7 +153,7 @@ const OwnerDashboard: React.FC = () => {
             <h2 className="text-2xl font-bold text-gray-900">
               Your Rental Shops
             </h2>
-            {shops.length > 0 && (
+            {shops.length > 4 && (
               <Link
                 to="/owner/shops/all"
                 className="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center gap-1"

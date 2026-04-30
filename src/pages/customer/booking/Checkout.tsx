@@ -381,22 +381,6 @@ const Checkout: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Payment Method Note */}
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-start gap-3">
-                    <CreditCard className="h-5 w-5 text-emerald-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">
-                        Pay at pickup
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        You will pay the total amount directly to the shop when
-                        you collect the bike.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
                 {error && (
                   <div className="bg-red-50 text-red-600 p-3 rounded-lg flex items-center gap-2">
                     <AlertCircle className="h-5 w-5" />
