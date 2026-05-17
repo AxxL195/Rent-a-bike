@@ -1,7 +1,6 @@
 import {
   Bike,
   ChevronDown,
-  User,
   LogOut,
 } from "lucide-react";
 import { useState } from "react";
@@ -47,12 +46,10 @@ const Navbar = () => {
             {profileDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                 
-                <Link to="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition">
+                {/* <Link to="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition">
                   <User className="h-4 w-4" /> Profile
-                </Link>
+                </Link> */}
                 
-                
-
                 <Link onClick={handleLogout} to="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 transition">
                   <LogOut className="h-4 w-4" /> Logout
                 </Link>

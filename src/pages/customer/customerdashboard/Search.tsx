@@ -10,7 +10,6 @@ interface SearchProps {
 
 const Search: React.FC<SearchProps> = ({ onSearchResults, onLoading }) => {
   const [location, setLocation] = useState('');
-  const [bikeType, setBikeType] = useState('all');
   const [gettingLocation, setGettingLocation] = useState(false);
 
   const handleLocationClick = () => {
@@ -45,9 +44,7 @@ const Search: React.FC<SearchProps> = ({ onSearchResults, onLoading }) => {
         onLoading(false);
         return;
       }
-      if (bikeType !== 'all') {
-        url += `&bikeType=${bikeType}`;
-      }
+      
       const response = await axios.get(url);
       onSearchResults(response.data);
     } catch (err) {
@@ -85,22 +82,6 @@ const Search: React.FC<SearchProps> = ({ onSearchResults, onLoading }) => {
               {gettingLocation ? <Loader className="h-4 w-4 animate-spin" /> : 'Use My Location'}
             </button>
           </div>
-        </div>
-
-        {/* Bike Type */}
-        <div className="md:col-span-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bike Type (optional)
-          </label>
-          <select
-            className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 outline-none"
-            value={bikeType}
-            onChange={(e) => setBikeType(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="bike">Bike</option>
-            <option value="scooter">Scooter</option>
-          </select>
         </div>
 
         {/* Search Button */}

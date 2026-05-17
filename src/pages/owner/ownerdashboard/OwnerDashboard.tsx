@@ -5,7 +5,6 @@ import axios from "axios";
 import {
   Store,
   Calendar,
-  DollarSign,
   PlusCircle,
   ArrowRight,
   AlertCircle,
@@ -132,19 +131,6 @@ const OwnerDashboard: React.FC = () => {
               <Calendar className="h-6 w-6 text-emerald-600" />
             </div>
           </Link>
-
-          <Link
-            to="/owner/earnings"
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all p-5 flex items-center justify-between group"
-          >
-            <div>
-              <p className="text-sm text-gray-500">Earnings</p>
-              <p className="text-xl font-semibold text-gray-800">This Month</p>
-            </div>
-            <div className="bg-emerald-50 rounded-full p-3 group-hover:bg-emerald-100 transition">
-              <DollarSign className="h-6 w-6 text-emerald-600" />
-            </div>
-          </Link>
         </div>
 
         {/* Shops Section */}
@@ -260,22 +246,6 @@ const OwnerDashboard: React.FC = () => {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Optional: Recent Activity or Stats (placeholder) */}
-        <div className="mt-8 bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Recent Activity
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm text-gray-600">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              <span>
-                No recent bookings yet. Your shops will appear here once
-                customers book.
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

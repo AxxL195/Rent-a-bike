@@ -248,7 +248,7 @@ export const getBikesForCustomer = async (req, res) => {
     }
     const bikes = await Bike.find({
       shop: shopId,
-      availability: { $in: ["available", "limited", "booked"] },
+      availability: { $in: ["available", "unavailable", "booked"] },
     }).lean();
     const result = await Promise.all(
       bikes.map(async (bike) => {

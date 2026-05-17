@@ -18,7 +18,12 @@ export const createBooking = async (req, res) => {
         (1000 * 60 * 60 * 24),
     );
 
-    const bike=await Bike.findById(bikeId);
+    const bike=await Bike.findByIdAndUpdate(
+      {_id:bikeId,availability:"available"},
+      {availability:"unavailable"},
+      {new:true}
+
+    );
 
     if (!bike) {
       return res.status(404).json({
