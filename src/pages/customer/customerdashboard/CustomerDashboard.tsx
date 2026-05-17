@@ -36,13 +36,6 @@ const CustomerDashboard: React.FC = () => {
                 }
             });
 
-            console.log('Nearby shops response:', response.data);
-            console.log('Shop details:', response.data.map((s: any) => ({ 
-              id: s.id,
-              name: s.name, 
-              image: s.image,
-              hasImage: !!s.image
-            })));
             setShops(Array.isArray(response.data) ? response.data : []);
             
           } catch (err: any) {

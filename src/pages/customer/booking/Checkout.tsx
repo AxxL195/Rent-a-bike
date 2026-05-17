@@ -10,7 +10,6 @@ import {
   User,
   Mail,
   Phone,
-  CreditCard,
   Shield,
   AlertCircle,
   Loader,

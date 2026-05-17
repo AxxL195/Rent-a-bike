@@ -24,6 +24,10 @@ export const createOrder = async (req, res) => {
         .json({ success: false, message: "Booking not found" });
     }
 
+    if (booking.customer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+
     const days = Math.ceil(
       (new Date(booking.endDate) - new Date(booking.startDate)) /
         (1000 * 60 * 60 * 24),
@@ -80,6 +84,10 @@ export const verify = async (req, res) => {
         .json({ success: false, message: "Booking not found" });
     }
 
+    if (booking.customer.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+    
     const secret = RAZORPAY_SECRET;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;

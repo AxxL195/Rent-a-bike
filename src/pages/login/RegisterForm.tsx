@@ -26,6 +26,8 @@ const RegisterForm = (props: any) => {
         },
       );
 
+      console.log(res.data.data)
+
       const user = res.data.data.user;
       
       const token = res.data.data.token;

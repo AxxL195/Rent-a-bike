@@ -18,8 +18,6 @@ interface ShopCardProps {
 
 const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   const customerId = useParams<{ customerId: string }>().customerId; // Get customerId from URL params
-  console.log('ShopCard received shop:', shop);
-  console.log('Image path would be:', `http://localhost:5000/uploads/${shop.image}`);
   const onViewBikes = () => {
     window.location.href = `/customer/${customerId}/shops/${shop.id}`; // Replace '1' with actual customer ID
   }
@@ -32,7 +30,6 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             alt={shop.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={(e) => {
-              console.error('Image failed to load:', shop.image);
               e.currentTarget.src = 'https://via.placeholder.com/300x150?text=No+Image';
             }}
           />

@@ -22,7 +22,7 @@ const LoginForm = (props: any) => {
       });
 
       const token = res.data.data.token;
-      console.log(res);
+      // console.log(res.data.data);
       // Store token in local storage
       localStorage.setItem("token", token);
 

@@ -37,12 +37,13 @@ export const register = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
+    console.log(newUser)
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
       data: {
         token,
-        user: newUser[0],
+        user: {_id:newUser[0]._id,name, email, role},
       },
     });
   } catch (err) {
@@ -87,7 +88,7 @@ export const login = async (req, res) => {
       message: "Login successful",
       data: {
         token,
-        user,
+        user: {_id:user._id,email,role:user.role},
       },
     });
   } catch (err) {
