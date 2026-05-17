@@ -32,10 +32,6 @@ export const createBooking = async (req, res) => {
       });
     }
 
-    bike.availability = "unavailable"
-
-    await bike.save();
-
     const price=bike.pricePerDay;
 
     const totalPrice=days*price;
